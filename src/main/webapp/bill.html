@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Calculate Bill</title>
+</head>
+<body>
+<h2>Calculate Bill</h2>
+
+<label>Reservation No:</label>
+<input type="text" id="rno">
+<button onclick="getBill()">Generate Bill</button>
+
+<pre id="billBox"></pre>
+
+<button onclick="window.print()">Print</button>
+
+<p><a href="dashboard.html">Back to Dashboard</a></p>
+
+<script>
+    async function getBill(){
+        const rno = document.getElementById("rno").value.trim();
+        if(!rno){
+            document.getElementById("billBox").innerText = "❌ Enter reservation number";
+            return;
+        }
+
+        const res = await fetch("bill?reservationNo=" + encodeURIComponent(rno));
+        const text = await res.text();
+        document.getElementById("billBox").innerText = text;
+    }
+</script>
+
+</body>
+</html>
