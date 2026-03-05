@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>View Reservation</title>
+</head>
+<body>
+<h2>View Reservation</h2>
+
+<label>Enter Reservation No:</label>
+<input type="text" id="rno">
+<button onclick="searchRes()">Search</button>
+
+<pre id="result"></pre>
+
+<p><a href="dashboard.html">Back to Dashboard</a></p>
+
+<script>
+    async function searchRes(){
+        const rno = document.getElementById("rno").value.trim();
+        if(!rno){
+            document.getElementById("result").innerText = "❌ Enter reservation number";
+            return;
+        }
+
+        const res = await fetch("view-reservation?reservationNo=" + encodeURIComponent(rno));
+        const text = await res.text();
+        document.getElementById("result").innerText = text;
+    }
+</script>
+
+</body>
+</html>
