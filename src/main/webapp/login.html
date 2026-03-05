@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Login - Hotel System</title>
+</head>
+<body>
+<h2>Login</h2>
+
+<form id="loginForm">
+    <label>Username:</label><br>
+    <input type="text" id="username" required><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" id="password" required><br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const res = await fetch("login", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password)
+        });
+
+        const text = await res.text();
+        document.getElementById("msg").innerText = text;
+
+        if (text.includes("Login successful")) {
+            window.location.href = "dashboard.html";
+        }
+    });
+</script>
+
+</body>
+</html>
