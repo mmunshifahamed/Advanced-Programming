@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>All Reservations</title>
+</head>
+<body>
+
+<h2>All Reservations</h2>
+
+<button onclick="loadReservations()">Load Reservations</button>
+
+<table border="1" id="resTable" style="margin-top:20px;">
+    <thead>
+    <tr>
+        <th>Reservation No</th>
+        <th>Name</th>
+        <th>Room</th>
+        <th>Check In</th>
+        <th>Check Out</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<p><a href="dashboard.html">Back to Dashboard</a></p>
+
+<script>
+    async function loadReservations() {
+        const res = await fetch("view-all");
+        const data = await res.json();
+
+        const tbody = document.querySelector("#resTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(r => {
+            const row = `<tr>
+                        <td>${r.reservationNo}</td>
+                        <td>${r.guestName}</td>
+                        <td>${r.roomType}</td>
+                        <td>${r.checkIn}</td>
+                        <td>${r.checkOut}</td>
+                     </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+</script>
+
+</body>
+</html>
