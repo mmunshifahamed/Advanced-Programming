@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+<h2>Dashboard ✅</h2>
+
+<ul>
+    <li><a href="addReservation.html">Add Reservation</a></li>
+    <li><a href="viewReservation.html">View Reservation</a></li>
+    <li><a href="viewAll.html">View All Reservations</a></li>
+    <li><a href="bill.html">Calculate Bill</a></li>
+    <li><a href="help.html">Help</a></li>
+    <li><a href="logout">Logout</a></li>
+</ul>
+
+<p id="msg"></p>
+
+<script>
+    // Check session by calling backend
+    fetch("session-check")
+        .then(r => r.text())
+        .then(t => {
+            if (t !== "OK") {
+                window.location.href = "login.html";
+            }
+        });
+</script>
+</body>
+</html>
