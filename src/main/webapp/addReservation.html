@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Add Reservation</title>
+</head>
+<body>
+<h2>Add Reservation</h2>
+
+<form id="resForm">
+    Reservation No: <input type="text" id="rno" required><br><br>
+    Name: <input type="text" id="name" required><br><br>
+    Address: <input type="text" id="address" required><br><br>
+    Contact: <input type="text" id="contact" required><br><br>
+
+    Room Type:
+    <select id="roomType" required>
+        <option value="">--Select--</option>
+        <option>Single</option>
+        <option>Double</option>
+        <option>Deluxe</option>
+        <option>Suite</option>
+    </select><br><br>
+
+    Check-in: <input type="date" id="checkIn" required><br><br>
+    Check-out: <input type="date" id="checkOut" required><br><br>
+
+    <button type="submit">Save Reservation</button>
+</form>
+
+<p id="msg"></p>
+<p><a href="dashboard.html">Back to Dashboard</a></p>
+
+<script>
+    document.getElementById("resForm").addEventListener("submit", async function(e){
+        e.preventDefault();
+
+        const data = new URLSearchParams();
+        data.append("reservationNo", document.getElementById("rno").value.trim());
+        data.append("guestName", document.getElementById("name").value.trim());
+        data.append("address", document.getElementById("address").value.trim());
+        data.append("contact", document.getElementById("contact").value.trim());
+        data.append("roomType", document.getElementById("roomType").value);
+        data.append("checkIn", document.getElementById("checkIn").value);
+        data.append("checkOut", document.getElementById("checkOut").value);
+
+        const res = await fetch("add-reservation", {
+            method: "POST",
+            headers: {"Content-Type":"application/x-www-form-urlencoded"},
+            body: data.toString()
+        });
+
+        document.getElementById("msg").innerText = await res.text();
+    });
+</script>
+
+</body>
+</html>
