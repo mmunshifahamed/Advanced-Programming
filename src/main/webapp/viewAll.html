@@ -5,46 +5,118 @@
     <meta charset="UTF-8">
     <title>All Reservations</title>
 </head>
+
 <body>
 
-<h2>All Reservations</h2>
+<div class="container fade-in">
 
-<button onclick="loadReservations()">Load Reservations</button>
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">OVR</div>
+            <div>
+                <h2>All Reservations</h2>
+                <p class="muted">View and manage reservations</p>
+            </div>
+        </div>
 
-<table border="1" id="resTable" style="margin-top:20px;">
-    <thead>
-    <tr>
-        <th>Reservation No</th>
-        <th>Name</th>
-        <th>Room</th>
-        <th>Check In</th>
-        <th>Check Out</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+        <a class="btn" href="dashboard.html">⬅ Dashboard</a>
+    </div>
 
-<p><a href="dashboard.html">Back to Dashboard</a></p>
+    <div class="card">
+
+        <button class="btn primary" onclick="loadReservations()">
+            📋 Load Reservations
+        </button>
+
+        <table id="resTable">
+
+            <thead>
+            <tr>
+                <th>Reservation No</th>
+                <th>Name</th>
+                <th>Room</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+
+        <div id="msg" class="toast"></div>
+
+    </div>
+
+</div>
 
 <script>
-    async function loadReservations() {
+
+    async function loadReservations(){
+
         const res = await fetch("view-all");
         const data = await res.json();
 
         const tbody = document.querySelector("#resTable tbody");
-        tbody.innerHTML = "";
+        tbody.innerHTML="";
 
-        data.forEach(r => {
-            const row = `<tr>
-                        <td>${r.reservationNo}</td>
-                        <td>${r.guestName}</td>
-                        <td>${r.roomType}</td>
-                        <td>${r.checkIn}</td>
-                        <td>${r.checkOut}</td>
-                     </tr>`;
+        data.forEach(r=>{
+
+            const row = `
+<tr>
+<td>${r.reservationNo}</td>
+<td>${r.guestName}</td>
+<td>${r.roomType}</td>
+<td>${r.checkIn}</td>
+<td>${r.checkOut}</td>
+
+<td>
+
+<button onclick="editReservation('${r.reservationNo}')">
+✏ Edit
+</button>
+
+<button onclick="deleteReservation('${r.reservationNo}')">
+🗑 Delete
+</button>
+
+</td>
+
+</tr>
+`;
+
             tbody.innerHTML += row;
+
         });
+
     }
+
+    function editReservation(rno){
+
+        window.location.href="editReservation.html?reservationNo="+rno;
+
+    }
+
+    async function deleteReservation(rno){
+
+        if(!confirm("Delete this reservation?")) return;
+
+        const data = new URLSearchParams();
+        data.append("reservationNo",rno);
+
+        const res = await fetch("delete-reservation",{
+            method:"POST",
+            headers:{"Content-Type":"application/x-www-form-urlencoded"},
+            body:data.toString()
+        });
+
+        alert(await res.text());
+
+        loadReservations();
+
+    }
+
 </script>
 
 </body>
