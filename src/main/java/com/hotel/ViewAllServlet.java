@@ -1,20 +1,23 @@
 package com.hotel;
 
-import com.hotel.db.DBConnection;
+import com.hotel.dao.ReservationDAO;
+import com.hotel.model.Reservation;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
+import java.util.List;
 
 @WebServlet("/view-all")
 public class ViewAllServlet extends HttpServlet {
 
+    private final ReservationDAO dao = new ReservationDAO();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        resp.setContentType("application/json");
+        resp.setContentType("application/json; charset=UTF-8");
         PrintWriter out = resp.getWriter();
 
         HttpSession session = req.getSession(false);
@@ -23,25 +26,24 @@ public class ViewAllServlet extends HttpServlet {
             return;
         }
 
-        String sql = "SELECT reservation_no, guest_name, room_type, check_in, check_out FROM reservations";
+        try {
 
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+            List<Reservation> list = dao.findAll();
 
             StringBuilder json = new StringBuilder("[");
             boolean first = true;
 
-            while (rs.next()) {
+            for (Reservation r : list) {
+
                 if (!first) json.append(",");
                 first = false;
 
                 json.append("{")
-                        .append("\"reservationNo\":\"").append(rs.getString("reservation_no")).append("\",")
-                        .append("\"guestName\":\"").append(rs.getString("guest_name")).append("\",")
-                        .append("\"roomType\":\"").append(rs.getString("room_type")).append("\",")
-                        .append("\"checkIn\":\"").append(rs.getDate("check_in")).append("\",")
-                        .append("\"checkOut\":\"").append(rs.getDate("check_out")).append("\"")
+                        .append("\"reservationNo\":\"").append(r.getReservationNo()).append("\",")
+                        .append("\"guestName\":\"").append(r.getGuestName()).append("\",")
+                        .append("\"roomType\":\"").append(r.getRoomType()).append("\",")
+                        .append("\"checkIn\":\"").append(r.getCheckIn()).append("\",")
+                        .append("\"checkOut\":\"").append(r.getCheckOut()).append("\"")
                         .append("}");
             }
 
