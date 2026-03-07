@@ -6,28 +6,93 @@
     <title>Dashboard</title>
 </head>
 <body>
-<h2>Dashboard ✅</h2>
 
-<ul>
-    <li><a href="addReservation.html">Add Reservation</a></li>
-    <li><a href="viewReservation.html">View Reservation</a></li>
-    <li><a href="viewAll.html">View All Reservations</a></li>
-    <li><a href="bill.html">Calculate Bill</a></li>
-    <li><a href="help.html">Help</a></li>
-    <li><a href="logout">Logout</a></li>
-</ul>
+<div class="container fade-in">
 
-<p id="msg"></p>
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">OVR</div>
+            <div>
+                <h2>Ocean View Resort</h2>
+                <p class="muted">Manage reservations, billing and reports</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <a class="btn" href="help.html">❓ Help</a>
+            <a class="btn primary" href="logout">⎋ Logout</a>
+        </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="grid">
+        <div class="grid-card">
+            <div class="content">
+                <h3>➕ Add Reservation</h3>
+                <p>Create a new reservation with guest and room details.</p>
+                <a class="btn primary" href="addReservation.html">Open</a>
+            </div>
+        </div>
+
+        <div class="grid-card">
+            <div class="content">
+                <h3>🔎 View Reservation</h3>
+                <p>Search by reservation number and view full details.</p>
+                <a class="btn primary" href="viewReservation.html">Open</a>
+            </div>
+        </div>
+
+        <div class="grid-card">
+            <div class="content">
+                <h3>📋 View All Reservations</h3>
+                <p>See all reservations in a report table.</p>
+                <a class="btn primary" href="viewAll.html">Open</a>
+            </div>
+        </div>
+
+        <div class="grid-card">
+            <div class="content">
+                <h3>🧾 Calculate Bill</h3>
+                <p>Generate the bill for a reservation (LKR / Rs.).</p>
+                <a class="btn primary" href="bill.html">Open</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast / Message area -->
+    <div id="msg" class="toast" role="status" aria-live="polite"></div>
+
+</div>
 
 <script>
-    // Check session by calling backend
+    const msg = document.getElementById("msg");
+
+    function showMsg(text, type){
+        msg.className = "toast show " + (type || "");
+        msg.textContent = text;
+        clearTimeout(window.__t);
+        window.__t = setTimeout(() => {
+            msg.className = "toast";
+            msg.textContent = "";
+        }, 2500);
+    }
+
+    // Session check
     fetch("session-check")
         .then(r => r.text())
         .then(t => {
             if (t !== "OK") {
-                window.location.href = "login.html";
+                showMsg("⚠️ Session expired. Please login again.", "warn");
+                setTimeout(() => window.location.href = "login.html", 800);
+            } else {
+                showMsg("✅ Welcome back!", "success");
             }
+        })
+        .catch(() => {
+            showMsg("❌ Network error. Try again.", "error");
         });
 </script>
+
 </body>
 </html>
