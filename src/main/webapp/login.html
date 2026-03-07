@@ -6,40 +6,106 @@
     <title>Login - Hotel System</title>
 </head>
 <body>
-<h2>Login</h2>
 
-<form id="loginForm">
-    <label>Username:</label><br>
-    <input type="text" id="username" required><br><br>
+<div class="auth-page fade-in">
 
-    <label>Password:</label><br>
-    <input type="password" id="password" required><br><br>
+    <div class="card auth-card">
 
-    <button type="submit">Login</button>
-</form>
+        <div class="auth-header">
+            <div class="logo-badge">OVR</div>
+            <div>
+                <h2>Ocean View Resort</h2>
+                <p class="muted">Hotel Reservation System</p>
+            </div>
+        </div>
 
-<p id="msg"></p>
+        <form id="loginForm" class="form">
+
+            <div class="field">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+
+            <button class="btn primary" type="submit" id="loginBtn">
+                <span class="btn-text">Login</span>
+                <span class="spinner" id="spinner"></span>
+            </button>
+
+        </form>
+
+        <div id="msg" class="toast"></div>
+
+    </div>
+
+</div>
 
 <script>
-    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
+    const spinner = document.getElementById("spinner");
+    const btn = document.getElementById("loginBtn");
+
+    function showMsg(text,type){
+        msg.className = "toast show " + (type || "");
+        msg.textContent = text;
+
+        setTimeout(()=>{
+            msg.className="toast";
+        },3000);
+    }
+
+    function setLoading(v){
+        spinner.style.display = v ? "inline-block":"none";
+        btn.disabled = v;
+    }
+
+    form.addEventListener("submit", async function(e){
+
         e.preventDefault();
 
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        const res = await fetch("login", {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password)
-        });
-
-        const text = await res.text();
-        document.getElementById("msg").innerText = text;
-
-        if (text.includes("Login successful")) {
-            window.location.href = "dashboard.html";
+        if(!username || !password){
+            showMsg("❌ Please enter username and password","error");
+            return;
         }
+
+        setLoading(true);
+
+        try{
+
+            const res = await fetch("login",{
+                method:"POST",
+                headers:{"Content-Type":"application/x-www-form-urlencoded"},
+                body:"username="+encodeURIComponent(username)+"&password="+encodeURIComponent(password)
+            });
+
+            const text = await res.text();
+
+            if(text.includes("Login successful")){
+                showMsg("✅ Login successful","success");
+                setTimeout(()=>{
+                    window.location.href="dashboard.html";
+                },800);
+            }else{
+                showMsg(text,"error");
+            }
+
+        }catch(e){
+            showMsg("❌ Network error","error");
+        }
+
+        setLoading(false);
+
     });
+
 </script>
 
 </body>
