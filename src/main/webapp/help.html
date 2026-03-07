@@ -6,26 +6,79 @@
     <title>Help</title>
 </head>
 <body>
-<h2>Help / User Guide</h2>
 
-<h3>How to Use the System</h3>
-<ol>
-    <li><b>Login</b> using your username and password.</li>
-    <li><b>Add Reservation</b> from the dashboard and fill all fields correctly.</li>
-    <li><b>View Reservation</b> by entering a reservation number to see details.</li>
-    <li><b>Calculate Bill</b> by entering the reservation number (bill shows Rs. values).</li>
-    <li><b>View All Reservations</b> to see a report of all reservations.</li>
-    <li><b>Logout</b> when you finish.</li>
-</ol>
+<div class="container fade-in">
 
-<h3>Common Errors</h3>
-<ul>
-    <li><b>Reservation number already exists</b>: use a new unique reservation number.</li>
-    <li><b>Contact must be 10 digits</b>: enter only numbers (e.g., 0771234567).</li>
-    <li><b>Check-out must be after check-in</b>: correct the dates.</li>
-    <li><b>Please login first</b>: login again if session expired.</li>
-</ul>
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">HR</div>
+            <div>
+                <h2>Help & User Guide</h2>
+                <p class="muted">Quick guide to use the Hotel Reservation System</p>
+            </div>
+        </div>
 
-<p><a href="dashboard.html">Back to Dashboard</a></p>
+        <a class="btn" href="dashboard.html">⬅ Dashboard</a>
+    </div>
+
+    <div class="grid">
+
+        <!-- How to use -->
+        <div class="grid-card" style="grid-column: span 12;">
+            <div class="content">
+                <h3>✅ How to Use the System</h3>
+                <p class="muted">Follow these steps to complete tasks smoothly.</p>
+
+                <div class="spacer"></div>
+
+                <ol style="margin:0; padding-left: 18px; line-height: 1.8;">
+                    <li><b>Login</b> using your username and password.</li>
+                    <li><b>Add Reservation</b> from the dashboard and fill all fields.</li>
+                    <li><b>View Reservation</b> using a reservation number to see details.</li>
+                    <li><b>Calculate Bill</b> using the reservation number (bill shows <b>Rs.</b> values).</li>
+                    <li><b>View All Reservations</b> to see a report of all reservations.</li>
+                    <li><b>Logout</b> when you finish.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Common errors -->
+        <div class="grid-card">
+            <div class="content">
+                <h3>⚠️ Common Errors</h3>
+                <p class="muted">If you see these messages, here’s what to do.</p>
+
+                <div class="spacer"></div>
+
+                <ul style="margin:0; padding-left: 18px; line-height: 1.8;">
+                    <li><b>Reservation number already exists</b> → Use a new unique number.</li>
+                    <li><b>Contact must be 10 digits</b> → Use only numbers (e.g., 0771234567).</li>
+                    <li><b>Check-out must be after check-in</b> → Fix the date selection.</li>
+                    <li><b>Please login first</b> → Session expired, login again.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="grid-card">
+            <div class="content">
+                <h3>💡 Tips</h3>
+                <p class="muted">Small tips to avoid mistakes.</p>
+
+                <div class="spacer"></div>
+
+                <ul style="margin:0; padding-left: 18px; line-height: 1.8;">
+                    <li>Keep reservation numbers like <b>R001, R002</b> (easy to track).</li>
+                    <li>Use Sri Lankan phone format: <b>07XXXXXXXX</b>.</li>
+                    <li>Check-in and check-out must be valid dates (out date should be later).</li>
+                    <li>Use <b>View All Reservations</b> to confirm saved data.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
