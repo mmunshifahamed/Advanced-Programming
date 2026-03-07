@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Edit Reservation</title>
+</head>
+
+<body>
+
+<div class="container fade-in">
+
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">HR</div>
+            <div>
+                <h2>Edit Reservation</h2>
+                <p class="muted">Update reservation details</p>
+            </div>
+        </div>
+
+        <a class="btn" href="dashboard.html">⬅ Dashboard</a>
+    </div>
+
+    <div class="card">
+
+        <form id="editForm">
+
+            <div class="field">
+                <label>Reservation Number</label>
+                <input type="text" id="rno" readonly>
+            </div>
+
+            <div class="field">
+                <label>Guest Name</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="field">
+                <label>Address</label>
+                <input type="text" id="address">
+            </div>
+
+            <div class="field">
+                <label>Contact</label>
+                <input type="text" id="contact">
+            </div>
+
+            <div class="field">
+                <label>Room Type</label>
+                <select id="roomType">
+                    <option>Single</option>
+                    <option>Double</option>
+                    <option>Deluxe</option>
+                    <option>Suite</option>
+                </select>
+            </div>
+
+            <div class="row">
+
+                <div class="field">
+                    <label>Check In</label>
+                    <input type="date" id="checkIn">
+                </div>
+
+                <div class="field">
+                    <label>Check Out</label>
+                    <input type="date" id="checkOut">
+                </div>
+
+            </div>
+
+            <button class="btn primary" type="submit">
+                Update Reservation
+            </button>
+
+        </form>
+
+        <div id="msg" class="toast"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const params = new URLSearchParams(window.location.search);
+    const rno = params.get("reservationNo");
+
+    document.getElementById("rno").value = rno;
+
+    async function loadReservation(){
+
+        const res = await fetch("view-reservation?reservationNo=" + rno);
+        const text = await res.text();
+
+        document.getElementById("msg").innerText = text;
+
+    }
+
+    loadReservation();
+
+    document.getElementById("editForm").addEventListener("submit", async function(e){
+
+        e.preventDefault();
+
+        const data = new URLSearchParams();
+
+        data.append("reservationNo",document.getElementById("rno").value);
+        data.append("guestName",document.getElementById("name").value);
+        data.append("address",document.getElementById("address").value);
+        data.append("contact",document.getElementById("contact").value);
+        data.append("roomType",document.getElementById("roomType").value);
+        data.append("checkIn",document.getElementById("checkIn").value);
+        data.append("checkOut",document.getElementById("checkOut").value);
+
+        const res = await fetch("update-reservation",{
+            method:"POST",
+            headers:{"Content-Type":"application/x-www-form-urlencoded"},
+            body:data.toString()
+        });
+
+        const text = await res.text();
+        document.getElementById("msg").innerText = text;
+
+    });
+
+</script>
+
+</body>
+</html>
