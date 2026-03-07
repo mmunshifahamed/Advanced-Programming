@@ -6,28 +6,101 @@
     <title>View Reservation</title>
 </head>
 <body>
-<h2>View Reservation</h2>
 
-<label>Enter Reservation No:</label>
-<input type="text" id="rno">
-<button onclick="searchRes()">Search</button>
+<div class="container fade-in">
 
-<pre id="result"></pre>
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">HR</div>
+            <div>
+                <h2>View Reservation</h2>
+                <p class="muted">Search reservation by number</p>
+            </div>
+        </div>
 
-<p><a href="dashboard.html">Back to Dashboard</a></p>
+        <a class="btn" href="dashboard.html">⬅ Dashboard</a>
+    </div>
+
+    <div class="card">
+
+        <div class="row">
+
+            <input type="text" id="rno" placeholder="R0001" maxlength="5">
+
+            <button class="btn primary" onclick="searchRes()">
+                🔍 Search
+            </button>
+
+        </div>
+
+        <div class="spacer"></div>
+
+        <pre id="result"></pre>
+
+        <div id="msg" class="toast"></div>
+
+    </div>
+
+</div>
 
 <script>
+
+    const msg = document.getElementById("msg");
+    const rnoInput = document.getElementById("rno");
+
+    /* Reservation Number Auto Formatter */
+
+    rnoInput.addEventListener("input", function(){
+
+        let value = this.value.replace(/[^0-9]/g,"");
+
+        if(value.length > 4){
+            value = value.slice(0,4);
+        }
+
+        value = value.padStart(4,'0');
+
+        this.value = "R" + value;
+
+    });
+
+    function showMsg(text,type){
+        msg.className = "toast show " + (type || "");
+        msg.textContent = text;
+
+        setTimeout(()=>{
+            msg.className="toast";
+        },3000);
+    }
+
     async function searchRes(){
-        const rno = document.getElementById("rno").value.trim();
+
+        const rno = rnoInput.value.trim();
+
         if(!rno){
-            document.getElementById("result").innerText = "❌ Enter reservation number";
+            showMsg("❌ Please enter reservation number","error");
             return;
         }
 
-        const res = await fetch("view-reservation?reservationNo=" + encodeURIComponent(rno));
-        const text = await res.text();
-        document.getElementById("result").innerText = text;
+        try{
+
+            const res = await fetch("view-reservation?reservationNo=" + encodeURIComponent(rno));
+            const text = await res.text();
+
+            document.getElementById("result").innerText = text;
+
+            if(text.includes("Reservation Found")){
+                showMsg("✅ Reservation loaded","success");
+            }else{
+                showMsg("⚠️ Reservation not found","warn");
+            }
+
+        }catch(e){
+            showMsg("❌ Network error","error");
+        }
+
     }
+
 </script>
 
 </body>
