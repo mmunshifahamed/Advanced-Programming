@@ -15,6 +15,7 @@ public class AddReservationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
         resp.setContentType("text/plain; charset=UTF-8");
 
         // ✅ Session protection
@@ -24,7 +25,7 @@ public class AddReservationServlet extends HttpServlet {
             return;
         }
 
-        // ✅ Read + trim values
+        // ✅ Read values
         String reservationNo = trim(req.getParameter("reservationNo"));
         String guestName     = trim(req.getParameter("guestName"));
         String address       = trim(req.getParameter("address"));
@@ -33,20 +34,24 @@ public class AddReservationServlet extends HttpServlet {
         String checkIn       = trim(req.getParameter("checkIn"));
         String checkOut      = trim(req.getParameter("checkOut"));
 
+        // ✅ Format Reservation Number to R0001 style
+        reservationNo = formatReservationNo(reservationNo);
+
         // ✅ Basic validation
         if (reservationNo.isEmpty() || guestName.isEmpty() || address.isEmpty() ||
                 contact.isEmpty() || roomType.isEmpty() || checkIn.isEmpty() || checkOut.isEmpty()) {
+
             resp.getWriter().println("❌ All fields are required.");
             return;
         }
 
-        // ✅ Contact validation (10 digits)
+        // ✅ Contact validation
         if (!contact.matches("\\d{10}")) {
             resp.getWriter().println("❌ Contact must be 10 digits (e.g., 0771234567).");
             return;
         }
 
-        // ✅ Date validation (check-out must be after check-in)
+        // ✅ Date validation
         LocalDate inDate, outDate;
         try {
             inDate = LocalDate.parse(checkIn);
@@ -61,10 +66,11 @@ public class AddReservationServlet extends HttpServlet {
             return;
         }
 
-        // ✅ DAO logic: duplicate check + insert
+        // ✅ Check duplicate reservation number
         try {
+
             if (dao.exists(reservationNo)) {
-                resp.getWriter().println("❌ Reservation number already exists.");
+                resp.getWriter().println("❌ This reservation number already exists.");
                 return;
             }
 
@@ -79,14 +85,37 @@ public class AddReservationServlet extends HttpServlet {
             );
 
             boolean ok = dao.addReservation(r);
-            resp.getWriter().println(ok ? "✅ Reservation Saved!" : "❌ Save failed.");
+
+            if (ok) {
+                resp.getWriter().println("✅ Reservation Saved!");
+            } else {
+                resp.getWriter().println("❌ Save failed.");
+            }
 
         } catch (Exception e) {
             resp.getWriter().println("❌ Error: " + e.getMessage());
         }
     }
 
+    // ✅ Remove spaces
     private String trim(String s) {
         return (s == null) ? "" : s.trim();
+    }
+
+    // ✅ Convert number to R0001 format
+    private String formatReservationNo(String input) {
+
+        if (input == null || input.isEmpty())
+            return "";
+
+        // remove R if user typed it
+        input = input.replaceAll("[^0-9]", "");
+
+        try {
+            int number = Integer.parseInt(input);
+            return String.format("R%04d", number);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
