@@ -6,30 +6,83 @@
     <title>Calculate Bill</title>
 </head>
 <body>
-<h2>Calculate Bill</h2>
 
-<label>Reservation No:</label>
-<input type="text" id="rno">
-<button onclick="getBill()">Generate Bill</button>
+<div class="container fade-in">
 
-<pre id="billBox"></pre>
+    <div class="topbar">
+        <div class="left">
+            <div class="logo-badge">HR</div>
+            <div>
+                <h2>Generate Bill</h2>
+                <p class="muted">Calculate hotel reservation bill</p>
+            </div>
+        </div>
 
-<button onclick="window.print()">Print</button>
+        <a class="btn" href="dashboard.html">⬅ Dashboard</a>
+    </div>
 
-<p><a href="dashboard.html">Back to Dashboard</a></p>
+    <div class="card">
+
+        <div class="row">
+            <input type="text" id="rno" placeholder="Enter Reservation Number">
+            <button class="btn primary" onclick="getBill()">🧾 Generate Bill</button>
+        </div>
+
+        <div class="spacer"></div>
+
+        <pre id="billBox"></pre>
+
+        <div class="spacer"></div>
+
+        <button class="btn" onclick="window.print()">🖨 Print Bill</button>
+
+        <div id="msg" class="toast"></div>
+
+    </div>
+
+</div>
 
 <script>
+
+    const msg = document.getElementById("msg");
+
+    function showMsg(text,type){
+        msg.className = "toast show " + (type || "");
+        msg.textContent = text;
+
+        setTimeout(()=>{
+            msg.className="toast";
+        },3000);
+    }
+
     async function getBill(){
+
         const rno = document.getElementById("rno").value.trim();
+
         if(!rno){
-            document.getElementById("billBox").innerText = "❌ Enter reservation number";
+            showMsg("❌ Enter reservation number","error");
             return;
         }
 
-        const res = await fetch("bill?reservationNo=" + encodeURIComponent(rno));
-        const text = await res.text();
-        document.getElementById("billBox").innerText = text;
+        try{
+
+            const res = await fetch("bill?reservationNo=" + encodeURIComponent(rno));
+            const text = await res.text();
+
+            document.getElementById("billBox").innerText = text;
+
+            if(text.includes("TOTAL")){
+                showMsg("✅ Bill generated successfully","success");
+            }else{
+                showMsg("⚠️ Reservation not found","warn");
+            }
+
+        }catch(e){
+            showMsg("❌ Failed to generate bill","error");
+        }
+
     }
+
 </script>
 
 </body>
